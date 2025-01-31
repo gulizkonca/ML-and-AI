@@ -110,3 +110,43 @@ print("{}: train set score: {} ".format(name, score))
 score_train = clf.score(X_train, y_train)
 print("{}: train set score: {} ".format(name, score_train))
 print()
+if hasattr(clf, "decision_function"):
+Z = clf.predict(np.c_[xx.ravel(), yy.ravel()])
+
+# Put the result into a color plot
+Z = Z.reshape(xx.shape)
+ax.contour(xx, yy, Z, cmap=cm, alpha=.8)
+
+# Plot the training points
+ax.scatter(X_train[:, 0], X_train[:, 1], c=y_train, cmap=cm_bright, edgecolors='k')
+
+# Plot the training points
+ax.scatter(X_train[:, 0], X_train[:, 1], c=y_train, cmap=cm_bright,marker = '^', edgecolors='white', alpha=0.6)
+
+ax.set_xticks(())
+ax.set_yticks(())
+if ds_cnt == 0:
+ax.set_title(name)
+score = score*100
+ax.text(xx.max() - .3, yy.min() + .3, ('%.1f' % score),
+size=15, horizontalalignment='right')
+i += 1
+print("---------------------------")
+plt.tight_layout()
+plt.show()
+
+def make_classify(dc, clf, name):
+x, y= dc
+x = RobustScaler().fit_transform(x)
+X_train, X_test, y_train, y_test = train_test_split(x, y, test_size=.4, random_state=random_state)
+
+for name, clf in zip(names, classifiers):
+clf.fit(X_train, y_train)
+score = clf.score(X_test, y_test)
+print("{}: test set score: {} ".format(name, score))
+score_train = clf.score(X_train, y_train)
+print("{}: train set score: {} ".format(name, score_train))
+print()
+
+print("Dataset # 2")
+make_classify(data_classification, classifiers, names)
